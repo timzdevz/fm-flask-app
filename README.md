@@ -1,0 +1,1 @@
+Fastmonkeys test exercise
