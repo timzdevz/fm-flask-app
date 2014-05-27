@@ -1,10 +1,13 @@
 from flask import render_template
 from . import app
-from .forms import RegistrationForm
+from .forms import RegistrationForm, LoginForm
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')
+    form = LoginForm()
+    if form.validate_on_submit():
+        pass
+    return render_template('index.html',form=form)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():

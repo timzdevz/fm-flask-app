@@ -2,6 +2,11 @@ from flask.ext.wtf import Form
 from wtforms import StringField, PasswordField, DateField, SubmitField
 from wtforms.validators import Required, Email, Length
 
+class LoginForm(Form):
+    email = StringField('Your email', validators=[Email(), Required()])
+    password = PasswordField('Your password', validators=[Required()])
+    submit = SubmitField('Submit')
+
 class RegistrationForm(Form):
     name = StringField('What is your name?', validators=[Required()])
     email = StringField('Your email', \

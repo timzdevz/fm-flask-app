@@ -1,5 +1,14 @@
+{% import 'bootstrap/wtf.html' as wtf %}
 {% extends "base.html" %}
 
 {% block title %}{{ super() }} - Home{% endblock %}
 
-{% block page_content %}<h1>Hello, Monkey!</h1>{% endblock %}
+{% block page_content %}
+<div class="page-header"><h1>Hello, there!</h1></div>
+<p class="lead">Sign in, if you are a monkey, or <a href="{{ url_for('register') }}">register</a> to become one!</p>
+	<div class="row">
+		<div class="col-md-4">
+			{{ wtf.quick_form(form,  button_map={'submit':'primary'}) }}	
+		</div>
+	</div>
+{% endblock %}
