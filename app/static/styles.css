@@ -1,0 +1,12 @@
+.template {
+	padding: 0 0 20px;
+}
+
+.navbar-brand {
+	font-family: 'Lobster', sans-serif;
+	font-size: 24px;
+}
+
+.white, .white a {
+  color: #fff;
+}
