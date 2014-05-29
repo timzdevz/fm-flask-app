@@ -7,13 +7,16 @@ from .models import Monkey
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    if current_user.is_authenticated():
+        return redirect(url_for('monkeys'))
+
     form = LoginForm()
     if form.validate_on_submit():
         monkey = Monkey.query.filter_by(email=form.email.data).first()
         if monkey is not None and monkey.verify_password(form.password.data):
             login_user(monkey)
             flash('Logged in successfully.', 'success')
-            return redirect(request.args.get('next') or url_for('index'))
+            return redirect(request.args.get('next') or url_for('monkeys'))
         else:
             flash('Invalid email or password', 'error')
 
@@ -37,6 +40,11 @@ def register():
         return redirect(url_for('index'))
 
     return render_template('register.html', form=form)
+
+@app.route('/monkeys', methods=['GET', 'POST'])
+@login_required
+def monkeys():
+    return render_template('monkeys.html')
 
 @app.route('/logout')
 @login_required
