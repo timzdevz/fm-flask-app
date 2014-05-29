@@ -1,11 +1,10 @@
 {% extends "bootstrap/base.html" %}
 {% set logged_out_navigation_bar = [
-    ('index', 'Home'),
+    ('index', 'Login'),
     ('register', 'Register'),
 ] -%}
 {% set logged_in_navigation_bar = [
-    ('monkeys', 'Home'),
-    ('logout', 'Sing out'),
+    ('monkeys', 'Monkeys')
 ] -%}
 {% set navigation_bar = logged_in_navigation_bar
     if current_user.is_authenticated() else logged_out_navigation_bar -%}
@@ -35,10 +34,19 @@
                   <li{% if id == active_page %} class="active"{% endif
                   %}><a href="{{ url_for(id) }}">{{ caption|e }}</a></li>
                 {% endfor %}
+
+                {% if current_user.is_authenticated() %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="glyphicon glyphicon-user"></span> {{ current_user.name }} <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ url_for('edit_profile') }}">Edit my profile</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{{ url_for('logout') }}">Log out</a></li>
+                        </ul>
+                    </li>
+                {% endif %}
             </ul>
-            {% if current_user.is_authenticated() %}
-                <p class="navbar-text">Logged in as {{ current_user.name }}</p> 
-            {% endif %}
         </div>
     </div>
 </div>
