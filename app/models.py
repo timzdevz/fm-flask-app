@@ -1,6 +1,9 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask.ext.login import UserMixin
 from . import db, login_manager
+from datetime import date, timedelta
+
+ONE_YEAR_SEC = timedelta(days=365).total_seconds()
 
 class Monkey(UserMixin, db.Model):
     __tablename__ = 'monkeys'
@@ -10,6 +13,10 @@ class Monkey(UserMixin, db.Model):
     email = db.Column(db.String(64), unique=True)
     password_hash = db.Column(db.String(128))
     birth_date = db.Column(db.Date())
+
+    @property
+    def age(self):
+        return int((date.today() - self.birth_date).total_seconds() // ONE_YEAR_SEC)
 
     @property
     def password(self):
