@@ -24,3 +24,25 @@ class RegistrationForm(Form):
     def validate_email(self, field):
         if Monkey.query.filter_by(email=field.data).first():
             raise ValidationError('Email has been already registered.')
+
+class EditProfileForm(Form):
+    name = StringField('Your name', validators=[Required()])
+    current_password = PasswordField('Your current password', validators=[Required()])
+    password = PasswordField('Your new password', validators=[
+        Length(min=6, message='Password must be at least 6 charachter long')])
+    password2 = PasswordField('Confirm your new password', validators=[
+        Required(), EqualTo('password', message='Passwords must match.')])
+    birth_date = DateField('Your birth date',\
+        description='Use DD/MM/YYYY format', format='%d/%m/%Y')
+    submit = SubmitField('Submit')
+
+    def __init__(self, monkey, *args, **kwargs):
+        super(EditProfileForm, self).__init__(*args, **kwargs)
+        self.monkey = monkey
+
+    def populate_form(self):
+        self.process(obj=self.monkey)
+
+    def validate_current_password(self, field):
+        if not self.monkey.verify_password(field.data):
+            raise ValidationError('Incorrect password')

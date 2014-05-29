@@ -1,0 +1,20 @@
+{% import 'bootstrap/wtf.html' as wtf %}
+{% extends "base.html" %}
+{% set active_page = "monkeys" %}
+
+{% block title %}{{ super() }} - {{ monkey.name }} profile page{% endblock %}
+
+{% block page_content %}
+<div class="page-header"><h1>{{ monkey.name }} - monkey's profile</h1></div>
+<ul class="list-group">
+    <li class="list-group-item">
+    	<strong>Name:</strong> {{ monkey.name }}
+    </li>
+    <li class="list-group-item">
+    	<strong>Age:</strong> {{ monkey.age }}
+    </li>
+    <li class="list-group-item">
+    	<strong>Email:</strong> {{ monkey.email }}
+    </li>
+</ul>
+{% endblock %}

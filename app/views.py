@@ -1,8 +1,8 @@
-from flask import render_template, flash, request, redirect, url_for
+from flask import render_template, flash, request, redirect, url_for, abort
 from flask.ext.login import login_user, logout_user, login_required, \
                             current_user
 from . import app, db
-from .forms import RegistrationForm, LoginForm
+from .forms import RegistrationForm, LoginForm, EditProfileForm
 from .models import Monkey
 
 @app.route('/', methods=['GET', 'POST'])
@@ -15,7 +15,6 @@ def index():
         monkey = Monkey.query.filter_by(email=form.email.data).first()
         if monkey is not None and monkey.verify_password(form.password.data):
             login_user(monkey)
-            flash('Logged in successfully.', 'success')
             return redirect(request.args.get('next') or url_for('monkeys'))
         else:
             flash('Invalid email or password', 'error')
@@ -41,10 +40,30 @@ def register():
 
     return render_template('register.html', form=form)
 
-@app.route('/monkeys', methods=['GET', 'POST'])
+@app.route('/monkey/<id>')
 @login_required
-def monkeys():
-    return render_template('monkeys.html')
+def profile(id):
+    monkey = Monkey.query.filter_by(id=id).first()
+    if monkey is None:
+        abort(404)
+
+    return render_template('monkey.html', monkey=monkey)
+
+@app.route('/edit-profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    monkey = current_user
+    form = EditProfileForm(monkey)
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            form.populate_obj(monkey)
+            db.session.add(monkey)
+            db.session.commit()
+            flash('Your profile has been successfully updated', 'success')
+    else:    
+        form.populate_form()
+
+    return render_template('edit_profile.html', form=form)
 
 @app.route('/logout')
 @login_required
