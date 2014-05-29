@@ -1,7 +1,8 @@
-from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask.ext.login import UserMixin
+from . import db, login_manager
 
-class Monkey(db.Model):
+class Monkey(UserMixin, db.Model):
     __tablename__ = 'monkeys'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -23,3 +24,7 @@ class Monkey(db.Model):
 
     def __repr__(self):
         return '<User {} {}>'.format(self.id, self.email)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return Monkey.query.get(int(user_id))
