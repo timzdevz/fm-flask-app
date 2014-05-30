@@ -16,7 +16,7 @@
 	<tr>
 		<td><a href="{{ url_for('profile', id=monkey.id) }}">{{ monkey.name }}</a></td>
 		<td>{{ monkey.friends_total }}</td>
-		<td>{{ monkey.best_friend }}</td>
+		<td>{{ monkey.best_friend.name }}</td>
 	</tr>
 	{% endfor %}
 </table>

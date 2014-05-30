@@ -20,7 +20,7 @@ class Monkey(UserMixin, db.Model):
     email = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     birth_date = db.Column(db.Date())
-    best_friend = db.Column(db.Integer)
+    best_friend_id = db.Column(db.Integer)
 
     friended = db.relationship('Monkey',
                                 secondary=Friendship.__tablename__,
@@ -28,10 +28,14 @@ class Monkey(UserMixin, db.Model):
                                 secondaryjoin=Friendship.monkey_2 == id,
                                 backref=db.backref('friends', lazy='dynamic'),
                                 lazy='dynamic')
-    
     @property
     def friends_total(self):
         return self.friends.count() + self.friended.count()
+
+    @property
+    def best_friend(self):
+        if self.has_best_friend():
+            return Monkey.query.get(self.best_friend_id)
     
     @property
     def age(self):
@@ -48,9 +52,32 @@ class Monkey(UserMixin, db.Model):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    def add_friend(self, monkey):
-        if monkey in self.friends:
-            raise ValueError("Friendship allready exits")
+    def add_friend(self, monkey_friend):
+        if self.has_friend(monkey_friend):
+            raise ValueError('Cannot add friend: friend already exists')
+
+        self.friends.append(monkey_friend)
+        self.save()
+
+    def add_best_friend(self, monkey_friend):
+        if self.has_best_friend():
+            raise ValueError('Cannot add best friend: best friend already exists')
+
+        self.best_friend_id = monkey_friend.id
+        self.save()
+
+    def has_friend(self, monkey_friend):
+        return monkey_friend in (self.friends.filter_by(id=monkey_friend.id).first(), \
+                                self.friended.filter_by(id=monkey_friend.id).first())
+
+    def has_best_friend(self):
+        return self.best_friend_id is not None
+
+    def is_best_friend(self, monkey_friend):
+        return monkey_friend.id == self.best_friend_id
+
+    def save(self):
+        db.session.add(self)
 
     def __repr__(self):
         return '<Monkey {} {}>'.format(self.id, self.email)

@@ -34,7 +34,6 @@ def register():
             birth_date=form.birth_date.data)
 
         db.session.add(monkey)
-        db.session.commit()
 
         flash('You have successfully registered! You can login now', 'success')
         return redirect(url_for('index'))
@@ -50,10 +49,7 @@ def monkeys():
 @app.route('/monkey/<int:id>')
 @login_required
 def profile(id):
-    monkey = Monkey.query.filter_by(id=id).first()
-    if monkey is None:
-        abort(404)
-
+    monkey = Monkey.query.filter_by(id=id).first_or_404()
     return render_template('monkey.html', monkey=monkey)
 
 @app.route('/edit-profile', methods=['GET', 'POST'])
@@ -64,8 +60,7 @@ def edit_profile():
     if request.method == 'POST':
         if form.validate_on_submit():
             form.populate_obj(monkey)
-            db.session.add(monkey)
-            db.session.commit()
+            monkey.save()
             flash('Your profile has been successfully updated', 'success')
     else:    
         form.populate_form()
@@ -79,8 +74,7 @@ def change_password():
     form = ChangePasswordForm(monkey)
     if form.validate_on_submit():
         monkey.password = form.password.data
-        db.session.add(monkey)
-        db.session.commit()
+        monkey.save()
         flash('Your password has been successfully changed', 'success')
 
     return render_template('change_password.html', form=form)
@@ -91,6 +85,28 @@ def logout():
     logout_user()
     flash('You have successfully logged out', 'success')
     return redirect(url_for('index'))
+
+@app.route('/add_friend/<int:id>')
+@login_required
+def add_friend(id):
+    friend_monkey = Monkey.query.filter_by(id=id).first_or_404()
+
+    if current_user.id == friend_monkey.id:
+        flash('You cannot add your self as a friend', 'error')
+        return redirect(url_for('profile', id=id))
+
+    try:
+        if request.args.get('best_friend') == 'true':
+            current_user.add_best_friend(friend_monkey)
+        else:
+            current_user.add_friend(friend_monkey)
+    except ValueError as e:
+        flash(str(e), 'error')
+    else:
+        flash('Friend was successfully added', 'success')
+    
+    return redirect(url_for('profile', id=id))
+
 
 @app.errorhandler(404)
 def page_not_found(e):

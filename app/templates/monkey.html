@@ -4,7 +4,20 @@
 {% block title %}{{ super() }} - {{ monkey.name }} profile page{% endblock %}
 
 {% block page_content %}
-<div class="page-header"><h1>{{ monkey.name }} - monkey's profile</h1></div>
+<div class="page-header">
+	<h1>{{ monkey.name }} - monkey's profile
+	{%- if current_user.has_friend(monkey) %}
+		{% set monkey_is_friend = true %}
+		<button type="button" class="btn btn-xs btn-success"><span class="glyphicon glyphicon-ok"></span>
+		Friends</button>
+		{% if current_user.is_best_friend(monkey) %}
+			{% set monkey_is_best_friend = true %}
+			<button type="button" class="btn btn-xs btn-info"><span class="glyphicon glyphicon-ok"></span>
+			Best Friend</button>
+		{% endif %}
+	{% endif -%}
+	</h1>
+</div>
 <ul class="list-group">
     <li class="list-group-item">
     	<strong>Name:</strong> {{ monkey.name }}
@@ -16,4 +29,10 @@
     	<strong>Email:</strong> {{ monkey.email }}
     </li>
 </ul>
+
+{% if not monkey_is_friend and monkey != current_user %}
+	<a href="{{ url_for('add_friend', id=monkey.id) }}" class="btn btn-primary">Add friend</a>
+{% elif not (current_user.has_best_friend() or monkey_is_best_friend) %}
+	<a href="{{ url_for('add_friend', id=monkey.id, best_friend='true') }}" class="btn btn-primary">Add as best friend</a>
+{% endif %}
 {% endblock %}
