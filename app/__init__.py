@@ -11,5 +11,6 @@ bootstrap = Bootstrap(app)
 db = SQLAlchemy(app)
 login_manager = LoginManager(app);
 login_manager.login_view = 'index'
+login_manager.login_message_category = "info"
 
 from . import views, models
