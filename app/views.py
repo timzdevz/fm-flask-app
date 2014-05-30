@@ -47,7 +47,7 @@ def monkeys():
     monkeys = Monkey.query.all()
     return render_template('monkeys.html', monkeys=monkeys)
 
-@app.route('/monkey/<id>')
+@app.route('/monkey/<int:id>')
 @login_required
 def profile(id):
     monkey = Monkey.query.filter_by(id=id).first()
