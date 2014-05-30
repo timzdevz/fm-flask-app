@@ -1,14 +1,7 @@
-{% import 'bootstrap/wtf.html' as wtf %}
-{% extends "base.html" %}
+{% extends "base_form.html" %}
+
 {% set active_page = "edit_profile" %}
 
-{% block title %}{{ super() }} - edit profile{% endblock %}
+{% block title %}{{ super() }} - edit_profile{% endblock %}
 
-{% block page_content %}
-<div class="page-header"><h1>Edit profile</h1></div>
-<div class="row">
-	<div class="col-md-4">
-	    {{ wtf.quick_form(form, button_map={'submit':'primary'}) }}
-	</div>
-</div>
-{% endblock %}
+{% block page_title %}Edit profile{% endblock %}
