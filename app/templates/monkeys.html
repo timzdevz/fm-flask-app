@@ -2,8 +2,22 @@
 {% extends "base.html" %}
 {% set active_page = "monkeys" %}
 
-{% block title %}{{ super() }} - Home{% endblock %}
+{% block title %}{{ super() }} - Monkeys{% endblock %}
 
 {% block page_content %}
 <div class="page-header"><h1>Monkeys</h1></div>
+<table class="table table-striped table-bordered">
+	<tr>
+		<th class="col-md-8">Name</th>
+		<th># of Friends</th>
+		<th>Best friend</th>
+	</tr>
+	{% for monkey in monkeys %}
+	<tr>
+		<td><a href="{{ url_for('profile', id=monkey.id) }}">{{ monkey.name }}</a></td>
+		<td>{{ monkey.friends_total }}</td>
+		<td>{{ monkey.best_friend }}</td>
+	</tr>
+	{% endfor %}
+</table>
 {% endblock %}
