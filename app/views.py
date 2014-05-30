@@ -2,7 +2,8 @@ from flask import render_template, flash, request, redirect, url_for, abort
 from flask.ext.login import login_user, logout_user, login_required, \
                             current_user
 from . import app, db
-from .forms import RegistrationForm, LoginForm, EditProfileForm
+from .forms import RegistrationForm, LoginForm, EditProfileForm, \
+                                                ChangePasswordForm
 from .models import Monkey
 
 @app.route('/', methods=['GET', 'POST'])
@@ -40,6 +41,12 @@ def register():
 
     return render_template('register.html', form=form)
 
+@app.route('/monkeys', methods=['GET', 'POST'])
+@login_required
+def monkeys():
+    monkeys = Monkey.query.all()
+    return render_template('monkeys.html', monkeys=monkeys)
+
 @app.route('/monkey/<id>')
 @login_required
 def profile(id):
@@ -64,6 +71,19 @@ def edit_profile():
         form.populate_form()
 
     return render_template('edit_profile.html', form=form)
+
+@app.route('/change-password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    monkey = current_user
+    form = ChangePasswordForm(monkey)
+    if form.validate_on_submit():
+        monkey.password = form.password.data
+        db.session.add(monkey)
+        db.session.commit()
+        flash('Your password has been successfully changed', 'success')
+
+    return render_template('change_password.html', form=form)
 
 @app.route('/logout')
 @login_required
