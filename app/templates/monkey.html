@@ -30,9 +30,11 @@
     </li>
 </ul>
 
-{% if not monkey_is_friend and monkey != current_user %}
-	<a href="{{ url_for('add_friend', id=monkey.id) }}" class="btn btn-primary">Add friend</a>
-{% elif not (current_user.has_best_friend() or monkey_is_best_friend) %}
-	<a href="{{ url_for('add_friend', id=monkey.id, best_friend='true') }}" class="btn btn-primary">Add as best friend</a>
+{% if monkey != current_user %}
+	{% if not monkey_is_friend and monkey != current_user %}
+		<a href="{{ url_for('add_friend', id=monkey.id) }}" class="btn btn-primary">Add friend</a>
+	{% elif not (current_user.has_best_friend() or monkey_is_best_friend) %}
+		<a href="{{ url_for('add_friend', id=monkey.id, best_friend='true') }}" class="btn btn-primary">Add as best friend</a>
+	{% endif %}
 {% endif %}
 {% endblock %}
