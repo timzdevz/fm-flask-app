@@ -78,6 +78,7 @@ class Monkey(UserMixin, db.Model):
 
     def save(self):
         db.session.add(self)
+        db.session.commit()
 
     def __repr__(self):
         return '<Monkey {} {}>'.format(self.id, self.email)

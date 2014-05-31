@@ -33,7 +33,7 @@ def register():
             password=form.password.data,
             birth_date=form.birth_date.data)
 
-        db.session.add(monkey)
+        monkey.save()
 
         flash('You have successfully registered! You can login now', 'success')
         return redirect(url_for('index'))
