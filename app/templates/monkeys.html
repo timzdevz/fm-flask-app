@@ -13,11 +13,12 @@
 		<th>Best friend</th>
 	</tr>
 	{% for monkey in monkeys %}
-	<tr>
-		<td><a href="{{ url_for('profile', id=monkey.id) }}">{{ monkey.name }}</a></td>
-		<td>{{ monkey.friends_total }}</td>
-		<td>{{ monkey.best_friend.name }}</td>
-	</tr>
+		{% set class = "current-user" if monkey == current_user %}
+		<tr class="{{ class }}">
+			<td><a href="{{ url_for('profile', id=monkey.id) }}">{{ monkey.name }}</a></td>
+			<td>{{ monkey.friends_total }}</td>
+			<td>{{ monkey.best_friend.name }}</td>
+		</tr>
 	{% endfor %}
 </table>
 {% endblock %}

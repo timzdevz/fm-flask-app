@@ -10,3 +10,7 @@
 .white, .white a {
   color: #fff;
 }
+
+.table .current-user {
+	font-weight: bold;
+}
