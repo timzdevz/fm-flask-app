@@ -53,3 +53,6 @@ class ChangePasswordForm(Form):
     def validate_current_password(self, field):
         if not self.monkey.verify_password(field.data):
             raise ValidationError('Incorrect password')
+
+class DeleteProfileForm(Form):
+    submit = SubmitField('Delete')

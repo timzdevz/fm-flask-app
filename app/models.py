@@ -76,6 +76,10 @@ class Monkey(UserMixin, db.Model):
     def is_best_friend(self, monkey_friend):
         return monkey_friend.id == self.best_friend_id
 
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
     def save(self):
         db.session.add(self)
         db.session.commit()

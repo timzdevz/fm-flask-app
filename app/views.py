@@ -3,7 +3,7 @@ from flask.ext.login import login_user, logout_user, login_required, \
                             current_user
 from . import app, db
 from .forms import RegistrationForm, LoginForm, EditProfileForm, \
-                                                ChangePasswordForm
+                            ChangePasswordForm, DeleteProfileForm
 from .models import Monkey
 
 @app.route('/', methods=['GET', 'POST'])
@@ -106,6 +106,19 @@ def add_friend(id):
         flash('Friend was successfully added', 'success')
     
     return redirect(url_for('profile', id=id))
+
+@app.route('/delete_profile', methods=['GET', 'POST'])
+@login_required
+def delete_profile():
+
+    form = DeleteProfileForm()
+    if form.validate_on_submit():
+        current_user.delete()
+        logout_user()
+        flash('Your monkey profile was successfully deleted', 'success')
+        redirect(url_for('index'))
+
+    return render_template('delete_profile.html', form=form)
 
 
 @app.errorhandler(404)
