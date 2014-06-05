@@ -69,6 +69,17 @@ class Monkey(UserMixin, db.Model):
         self.best_friend_id = monkey_friend.id
         self.save()
 
+    def delete_friend(self, monkey_friend):
+        if monkey_friend in self.friends:
+            self.friends.remove(monkey_friend)
+        if monkey_friend in self.friended:
+            self.friended.remove(monkey_friend)
+
+        if self.best_friend_id == monkey_friend.id:
+            self.best_friend_id = None
+
+        self.save()
+
     def has_friend(self, monkey_friend):
         return monkey_friend in (self.friends.filter_by(id=monkey_friend.id).first(), \
                                 self.friended.filter_by(id=monkey_friend.id).first())

@@ -107,6 +107,19 @@ def add_friend(id):
     
     return redirect(url_for('profile', id=id))
 
+@app.route('/delete_friend/<int:id>')
+@login_required
+def delete_friend(id):
+    friend_monkey = Monkey.query.filter_by(id=id).first_or_404()
+
+    if current_user.has_friend(friend_monkey):
+        current_user.delete_friend(friend_monkey)
+        flash('Friend was successfully deleted', 'success')
+    else:
+        flash('Friend was not found', 'error')
+
+    return redirect(url_for('profile', id=id))
+
 @app.route('/delete_profile', methods=['GET', 'POST'])
 @login_required
 def delete_profile():
