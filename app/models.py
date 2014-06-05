@@ -63,6 +63,9 @@ class Monkey(UserMixin, db.Model):
         if self.has_best_friend():
             raise ValueError('Cannot add best friend: best friend already exists')
 
+        if not self.has_friend(monkey_friend):
+            raise ValueError('First you have to add monkey as friend')
+
         self.best_friend_id = monkey_friend.id
         self.save()
 
