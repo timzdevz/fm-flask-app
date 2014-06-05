@@ -45,3 +45,6 @@ docs/_build/
 
 # Virtual environment
 venv
+
+#SQLite
+*.sqlite
